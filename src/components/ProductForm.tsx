@@ -1,17 +1,23 @@
-import { Product } from "../types"
+// Importamos el tipo Product.
+import { Product } from "../types/types"
 
 type ProductFormProps = {
     product?: Product
 }
 
+// Este componente muestra el formulario para crear/editar un producto.
+// Incluye campos para el nombre y el precio.
 export default function ProductForm({product} : ProductFormProps) {
     return (
         <>
+            {/* Campo para el nombre del producto */}
             <div className="mb-4">
                 <label
                     className="text-gray-800"
                     htmlFor="name"
-                >Nombre Producto:</label>
+                >
+                    Nombre Producto:
+                </label>
                 <input 
                     id="name"
                     type="text"
@@ -22,11 +28,14 @@ export default function ProductForm({product} : ProductFormProps) {
                 />
             </div>
 
+            {/* Campo para el precio del producto */}
             <div className="mb-4">
                 <label
                     className="text-gray-800"
                     htmlFor="price"
-                >Precio:</label>
+                >
+                    Precio:
+                </label>
                 <input 
                     id="price"
                     type="number"
@@ -36,7 +45,6 @@ export default function ProductForm({product} : ProductFormProps) {
                     defaultValue={product?.price}
                 />
             </div>
-        
         </>
     )
 }
