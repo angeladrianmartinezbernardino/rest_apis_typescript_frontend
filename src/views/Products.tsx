@@ -1,63 +1,63 @@
 // Importamos las dependencias necesarias.
-import { ActionFunctionArgs, Link, useLoaderData } from 'react-router-dom'
-import { getProducts, updateProductAvailability } from '../services/ProductService'
+import { ActionFunctionArgs, Link, useLoaderData } from 'react-router-dom';
+import { getProducts, updateProductAvailability } from '../services/ProductService';
 import ProductDetails from '../components/ProductDetails';
 import { Product } from '../types/types';
 
-// Loader para obtener todos los productos antes de renderizar el componente.
-// Retorna un arreglo de productos. Si getProducts() falla, ahora sabemos que devolverá [].
+// Loader para obtener productos antes de renderizar el componente.
 export async function loader() {
-    return await getProducts() // Esto siempre devolverá un arreglo, aunque vacío.
+    const products = await getProducts(); // Llama a la API para obtener los productos.
+    return products; // Siempre devolverá un arreglo, incluso si está vacío.
 }
 
 // Action para actualizar la disponibilidad de un producto.
-export async function action({request} : ActionFunctionArgs) {
-    // Obtenemos los datos del formulario.
-    const data  = Object.fromEntries(await request.formData())
-    // Actualizamos la disponibilidad del producto.
-    await updateProductAvailability(+data.id)
-    return {}
+export async function action({ request }: ActionFunctionArgs) {
+    const data = Object.fromEntries(await request.formData());
+    await updateProductAvailability(+data.id); // Actualiza disponibilidad.
+    return {};
 }
 
+// Componente principal para mostrar productos.
 export default function Products() {
-    // Obtenemos los productos del loader. Ahora products siempre será un arreglo.
-    const products = useLoaderData() as Product[]
+    const products = useLoaderData() as Product[]; // Obtiene los productos del loader.
 
-    return(
-    <>
-        {/* Encabezado de la página */}
-        <div className='flex justify-between'>
-            <h2 className='text-4xl font-black text-slate-500'>Productos</h2>
-            <Link
-                to="productos/nuevo"
-                className='rounded-md bg-blue-500 p-3 text-sm font-bold text-white shadow-sm hover:bg-blue-600'
-            >
-                Agregar Producto
-            </Link>
-        </div>
+    return (
+        <>
+            <div className="flex justify-between">
+                <h2 className="text-4xl font-black text-slate-500">Productos</h2>
+                <Link
+                    to="productos/nuevo"
+                    className="rounded-md bg-blue-500 p-3 text-sm font-bold text-white shadow-sm hover:bg-blue-600"
+                >
+                    Agregar Producto
+                </Link>
+            </div>
 
-        {/* Tabla de productos */}
-        <div className="p-2">
-            <table className="w-full mt-5 table-auto">
-                <thead className="bg-slate-800 text-white">
-                    <tr>
-                        <th className="p-2">Producto</th>
-                        <th className="p-2">Precio</th>
-                        <th className="p-2">Disponibilidad</th>
-                        <th className="p-2">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {/* Mapeamos los productos. Ahora no habrá error, pues products es [] en el peor de los casos. */}
-                    {products.map(product => (
-                        <ProductDetails
-                            key={product.id}
-                            product={product}
-                        />
-                    ))}
-                </tbody>
-            </table>
-        </div>
-    </>
-    )
+            <div className="p-2">
+                <table className="w-full mt-5 table-auto">
+                    <thead className="bg-slate-800 text-white">
+                        <tr>
+                            <th className="p-2">Producto</th>
+                            <th className="p-2">Precio</th>
+                            <th className="p-2">Disponibilidad</th>
+                            <th className="p-2">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {products.length > 0 ? (
+                            products.map((product) => (
+                                <ProductDetails key={product.id} product={product} />
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan={4} className="text-center text-gray-500">
+                                    No hay productos disponibles.
+                                </td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </div>
+        </>
+    );
 }

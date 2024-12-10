@@ -1,13 +1,13 @@
 // Importamos las dependencias necesarias.
-import { safeParse, number, parse, coerce } from 'valibot'
-import axios from 'axios'
-import { DraftProductSchema, ProductsSchema, Product, ProductSchema } from "../types/types"
+import { safeParse, number, parse, coerce } from 'valibot';
+import axios from 'axios';
+import { DraftProductSchema, ProductsSchema, Product, ProductSchema } from '../types/types';
 import { toBoolean } from '../utils/utils';
 
-// Definimos el tipo ProductData para manejar los datos recibidos desde el formulario.
+// Tipo para manejar datos del formulario.
 type ProductData = {
     [k: string]: FormDataEntryValue;
-}
+};
 
 // Función para agregar un producto.
 export async function addProduct(data: ProductData) {
@@ -39,25 +39,19 @@ export async function addProduct(data: ProductData) {
 
 // Función para obtener todos los productos.
 export async function getProducts(): Promise<Product[]> {
-    // Intentamos obtener los productos.
     try {
-        // Construimos la URL a la API.
-        const url = `${import.meta.env.VITE_API_URL}/api/products`
-        // Hacemos la petición GET a la API.
-        const { data } = await axios(url)
-        // Validamos los datos con ProductsSchema.
-        const result = safeParse(ProductsSchema, data.data)
-        // Si la validación es exitosa, retornamos el resultado.
-        if(result.success) {
-            return result.output
+        console.log('URL de la API:', import.meta.env.VITE_API_URL); // Verifica la URL de la API.
+        const url = `${import.meta.env.VITE_API_URL}/api/products`;
+        const { data } = await axios(url);
+        const result = safeParse(ProductsSchema, data.data);
+        if (result.success) {
+            return result.output;
         } else {
-            // Si la validación falla, lanzamos un error.
-            throw new Error('Hubo un error en la validación de productos...')
+            throw new Error('Error en la validación de productos.');
         }
     } catch (error) {
-        // Si ocurre un error lo mostramos en consola y retornamos un arreglo vacío.
-        console.error(error)
-        return [] // Retornamos un arreglo vacío para evitar undefined.
+        console.error('Error al obtener productos:', error);
+        return [];
     }
 }
 
